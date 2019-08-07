@@ -13,6 +13,9 @@ class Snake:
 	def take_step(self, position):
 		self.body = [position] + self.body[:-1]
 
+	def extend(self):
+		self.body.append(self.get_head())
+
 	def set_direction(self, direction):
 		self.direction = direction
 
@@ -38,18 +41,16 @@ class Game:
 			self.make_move()
 	
 	def get_input(self):
-		move = raw_input()
-		if move == "w" and self.snake.direction != DOWN:
+		move = raw_input().capitalize()
+		if move == "W" and self.snake.direction != DOWN:
 			self.snake.direction = UP
-		elif move == "a" and self.snake.direction != RIGHT:
+		elif move == "A" and self.snake.direction != RIGHT:
 			self.snake.direction = LEFT
-		elif move == "s" and self.snake.direction != UP:
+		elif move == "S" and self.snake.direction != UP:
 			self.snake.direction = DOWN
-		elif move == "d" and self.snake.direction != LEFT:
+		elif move == "D" and self.snake.direction != LEFT:
 			self.snake.direction = RIGHT
-		elif move.isupper():
-			print "TURN CAPS LOCK OFF!!!"
-			quit()
+	
 
 	def make_move(self):
 		new_pos = tuple(map(sum, zip(self.snake.get_head(), self.snake.direction)))
@@ -67,7 +68,7 @@ class Game:
 		# eat apple
 		elif new_pos == self.apple.position:
 			del self.apple
-			self.snake.body.append(self.snake.get_head())
+			self.snake.extend()
 			self.snake.take_step(new_pos)
 			self.score += 1
 			self.apple = Apple(self.height, self.width)
@@ -80,7 +81,8 @@ class Game:
 		matrix = self.board_matrix()
 		snake_matrix = self.add_snake_to_matrix(matrix)
 		apple_pos = self.apple.position
-		print "+" + "-"*self.width + "+"
+		horizontal_boarders = "+" + "-"*self.width + "+" 
+		print horizontal_boarders
 		matrix[apple_pos[0]][apple_pos[1]] = "A"
 		for row in snake_matrix:
 			line = ""
@@ -90,7 +92,7 @@ class Game:
 				else:
 					line += r
 			print "|" + line + "|"
-		print "+" + "-"*self.width + "+"
+		print horizontal_boarders
 
 	def add_snake_to_matrix(self, matrix):
 		(xhead,yhead), positions = self.snake.get_head(), self.snake.body[1:]
@@ -100,7 +102,7 @@ class Game:
 		return matrix
 
 	def board_matrix(self):
-		return [[None for i in range(self.width)] for j in range(self.height)]
+		return [[None for _ in range(self.width)] for _ in range(self.height)]
 
 game = Game(15,25) 
 game.play()
