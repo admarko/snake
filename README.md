@@ -1,2 +1,1 @@
-# snake
-snake game for terminal
+It has no dependencies - just run python main.py and enjoy.
